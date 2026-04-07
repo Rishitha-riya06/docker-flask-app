@@ -24,8 +24,13 @@ services:
     # No Dockerfile needed — using pre-built image
     image: redis:7-alpine
     # WHY: Connect to same network as web container
+    volumes:
+      - redis-data:/data
     networks:
       - app-network
+
+volumes:
+  redis-data:
 
 # WHY: Custom network so containers can talk to each other by name
 # Without this — containers are isolated and can't communicate
