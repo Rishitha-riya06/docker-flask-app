@@ -1,0 +1,34 @@
+
+
+services:
+  # WHY: First container — our Flask application
+  web:
+    # WHY: Build from Dockerfile in current directory
+    build: .
+    # WHY: Map port 5000 on host to 5000 in container
+    ports:
+      - "5000:5000"
+    # WHY: Environment variables passed into container
+    environment:
+      - REDIS_HOST=redis
+    # WHY: Web container waits for Redis to start first
+    depends_on:
+      - redis
+    # WHY: Connect to our custom network
+    networks:
+      - app-network
+
+  # WHY: Second container — Redis database
+  redis:
+    # WHY: Use official Redis image from Docker Hub
+    # No Dockerfile needed — using pre-built image
+    image: redis:7-alpine
+    # WHY: Connect to same network as web container
+    networks:
+      - app-network
+
+# WHY: Custom network so containers can talk to each other by name
+# Without this — containers are isolated and can't communicate
+networks:
+  app-network:
+    driver: bridge
